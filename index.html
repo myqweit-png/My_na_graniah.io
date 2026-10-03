@@ -1,0 +1,688 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link rel="icon" type="image/x-icon" href="img/favicon.png" sizes="any">
+<title>На гранях — Главная</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,600;1,300;1,400&family=Share+Tech+Mono&family=IBM+Plex+Mono:wght@400&family=Exo+2:wght@200;300;400&display=swap">
+<style>
+  /*
+    Раскладка: фиксированная боковая навигация слева (260px), справа обложка и раздел с тремя ссылками. Оформление взято из World Book (тёмная тема).
+    Тема одна, тёмная: все цвета заданы явно на :root.
+  */
+  :root {
+    color-scheme: dark;
+
+    /* Фоны: от самого тёмного к самому светлому */
+    --bg: #0a0a0b;
+    --bg2: #0f0f11;
+    --bg3: #141416;
+
+    /* Линии и рамки */
+    --line: #1e1e22;
+    --line2: #2a2a30;
+
+    /* Текст: основной, приглушённый (подписи) и едва заметный (только декор) */
+    --text: #c8c4bc;
+    --text-dim: #8a857c;
+    --text-faint: #4a4743;
+    --white: #e8e4dc;
+
+    /* Акценты: золото, зелень, фиолет, красный для предупреждений */
+    --accent: #b8955a;
+    --accent2: #7a9e8a;
+    --accent3: #8a6a9a;
+    --red: #9a4a3a;
+    --on-accent: #0a0a0b; /* цвет текста на светлых акцентных заливках */
+
+    /* Шрифты: у моноширинного запасной с кириллицей, т.к. Share Tech Mono её не содержит */
+    --font-serif: 'Cormorant Garamond', Georgia, serif;
+    --font-mono: 'Share Tech Mono', 'IBM Plex Mono', monospace;
+    --font-sans: 'Exo 2', sans-serif;
+  }
+
+  /* Сброс отступов; отступы :root от оболочки страницы остаются, т.к. у :root выше специфичность */
+  * { margin: 0; padding: 0; box-sizing: border-box; }
+
+  html { scroll-behavior: smooth; }
+
+  body {
+    background: var(--bg);
+    color: var(--text);
+    font-family: var(--font-serif);
+    font-size: 18px;
+    line-height: 1.8;
+    min-height: 100vh;
+  }
+
+  /* Лёгкий шум поверх страницы, не перехватывает клики */
+  body::before {
+    content: '';
+    position: fixed;
+    inset: 0;
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 256 256' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.9' numOctaves='4' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' opacity='0.04'/%3E%3C/svg%3E");
+    pointer-events: none;
+    z-index: 1000;
+    opacity: 0.4;
+  }
+
+  /* Видимая рамка фокуса для навигации с клавиатуры */
+  a:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+  /* ===== БОКОВОЕ МЕНЮ ===== */
+  .sidebar {
+    position: fixed;
+    left: 0;
+    top: 0;
+    width: 260px;
+    height: 100vh;
+    background: var(--bg2);
+    border-right: 1px solid var(--line);
+    display: flex;
+    flex-direction: column;
+    padding: 40px 0;
+    z-index: 100;
+    overflow-y: auto;
+  }
+
+  .sidebar-logo {
+    padding: 0 30px 40px;
+    border-bottom: 1px solid var(--line);
+    margin-bottom: 30px;
+  }
+
+  .sidebar-logo .title {
+    font-family: var(--font-mono);
+    font-size: 20px;
+    color: var(--accent);
+    letter-spacing: 0.15em;
+    display: block;
+  }
+
+  .sidebar-logo .subtitle {
+    font-family: var(--font-sans);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-top: 6px;
+    display: block;
+  }
+
+  .nav-section { padding: 0 30px; margin-bottom: 8px; }
+
+  .nav-section-label {
+    font-family: var(--font-mono);
+    font-size: 10px;
+    color: var(--text-dim);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 10px;
+    margin-top: 20px;
+  }
+
+  .nav-link {
+    display: block;
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--text-dim);
+    text-decoration: none;
+    padding: 5px 0 5px 10px;
+    margin-left: -10px;
+    letter-spacing: 0.05em;
+    transition: color 0.2s;
+    border-left: 2px solid transparent;
+  }
+
+  .nav-link:hover { color: var(--accent); border-left-color: var(--accent); }
+
+  /* ===== ОСНОВНАЯ КОЛОНКА ===== */
+  .main { margin-left: 260px; min-height: 100vh; }
+
+  /* ===== ОБЛОЖКА ===== */
+  .cover {
+    min-height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: flex-end;
+    padding: 80px;
+    position: relative;
+    border-bottom: 1px solid var(--line);
+    overflow: hidden;
+  }
+
+  /* Два мягких цветных пятна на фоне обложки */
+  .cover::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background:
+      radial-gradient(ellipse at 70% 30%, rgba(184,149,90,0.04) 0%, transparent 60%),
+      radial-gradient(ellipse at 20% 80%, rgba(138,106,154,0.04) 0%, transparent 50%);
+  }
+
+  /* Сетка 60x60, затухающая к центру */
+  .cover-grid {
+    position: absolute;
+    inset: 0;
+    background-image:
+      linear-gradient(var(--line) 1px, transparent 1px),
+      linear-gradient(90deg, var(--line) 1px, transparent 1px);
+    background-size: 60px 60px;
+    opacity: 0.3;
+    mask-image: radial-gradient(ellipse at center, transparent 20%, black 80%);
+  }
+
+  .cover > * { position: relative; }
+  .cover > .cover-grid { position: absolute; }
+
+  .cover-index {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.4em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+  }
+
+  .cover-title {
+    font-family: var(--font-mono);
+    font-size: clamp(48px, 8vw, 100px);
+    color: var(--white);
+    letter-spacing: 0.08em;
+    line-height: 1;
+    margin-bottom: 8px;
+    font-weight: 400;
+    text-wrap: balance;
+  }
+
+  .cover-title span { color: var(--accent); }
+
+  .cover-subtitle {
+    font-family: var(--font-serif);
+    font-size: 20px;
+    font-weight: 300;
+    font-style: italic;
+    color: var(--text-dim);
+    margin-bottom: 60px;
+    letter-spacing: 0.05em;
+  }
+
+  .cover-meta {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px 60px;
+    border-top: 1px solid var(--line2);
+    padding-top: 30px;
+  }
+
+  .cover-meta-item {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+  }
+
+  .cover-meta-item span {
+    display: block;
+    color: var(--text);
+    font-size: 13px;
+    margin-top: 4px;
+    letter-spacing: 0.05em;
+    font-family: var(--font-mono);
+  }
+
+  /* ===== РАЗДЕЛЫ ===== */
+  .section {
+    padding: 80px;
+    border-bottom: 1px solid var(--line);
+    position: relative;
+  }
+
+  /* Чётные разделы чуть светлее, чтобы границы читались */
+  .section:nth-child(even) { background: var(--bg2); }
+
+  .section-header {
+    display: flex;
+    align-items: baseline;
+    gap: 24px;
+    margin-bottom: 60px;
+  }
+
+  .section-number {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.3em;
+    white-space: nowrap;
+    padding-top: 4px;
+  }
+
+  .section-title {
+    font-family: var(--font-serif);
+    font-size: clamp(28px, 4vw, 44px);
+    font-weight: 300;
+    color: var(--white);
+    letter-spacing: 0.02em;
+    line-height: 1.2;
+    border-bottom: 1px solid var(--line2);
+    padding-bottom: 20px;
+    flex: 1;
+    min-width: 0;
+    text-wrap: balance;
+  }
+
+  /* ===== ПОДРАЗДЕЛЫ ===== */
+  .subsection { margin-bottom: 60px; }
+  .subsection:last-child { margin-bottom: 0; }
+
+  .subsection-title {
+    font-family: var(--font-sans);
+    font-size: 13px;
+    font-weight: 300;
+    color: var(--accent);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    margin-bottom: 24px;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+  }
+
+  /* Тонкая линия после заголовка подраздела */
+  .subsection-title::after {
+    content: '';
+    flex: 1;
+    height: 1px;
+    background: var(--line2);
+  }
+
+  /* ===== ТЕКСТ ===== */
+  p {
+    font-family: var(--font-serif);
+    font-size: 18px;
+    line-height: 1.85;
+    color: var(--text);
+    margin-bottom: 20px;
+    font-weight: 300;
+    max-width: 72ch;
+  }
+
+  p:last-child { margin-bottom: 0; }
+
+  strong { color: var(--white); font-weight: 600; }
+  em { color: var(--accent); font-style: italic; }
+
+  /* Маркированный список правил: тире вместо точек */
+  .rule-list { list-style: none; margin-bottom: 20px; max-width: 72ch; }
+  .rule-list:last-child { margin-bottom: 0; }
+
+  .rule-list li {
+    position: relative;
+    padding-left: 28px;
+    margin-bottom: 8px;
+    font-weight: 300;
+  }
+
+  .rule-list li::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0.95em;
+    width: 14px;
+    height: 1px;
+    background: var(--accent);
+  }
+
+  /* Вложенный список (диапазоны дистанции) */
+  .rule-list .rule-list { margin-top: 8px; margin-bottom: 0; }
+
+  /* ===== БЛОКИ-ПРАВИЛА С ЦВЕТНОЙ ЛЕВОЙ ЛИНИЕЙ ===== */
+  .law-block {
+    background: var(--bg3);
+    border-left: 3px solid var(--accent);
+    padding: 36px 40px;
+    margin-bottom: 32px;
+  }
+
+  .law-block:last-child { margin-bottom: 0; }
+  .law-block.second { border-left-color: var(--accent2); }
+  .law-block.third { border-left-color: var(--accent3); }
+
+  .law-number {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.3em;
+    text-transform: uppercase;
+    margin-bottom: 12px;
+  }
+
+  .law-title {
+    font-family: var(--font-serif);
+    font-size: 26px;
+    font-weight: 400;
+    color: var(--white);
+    margin-bottom: 20px;
+    font-style: italic;
+  }
+
+  /* Блок предупреждения (красная линия) */
+  .warning {
+    border: 1px solid var(--red);
+    border-left-width: 3px;
+    background: var(--bg3);
+    padding: 24px 32px;
+    margin-top: 32px;
+  }
+
+  .warning p { color: var(--text); }
+  .warning strong { color: var(--white); letter-spacing: 0.1em; }
+
+  /* ===== СЕТКА КАРТОЧЕК ===== */
+  .entity-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+    gap: 16px;
+    margin: 28px 0;
+  }
+
+  .entity-grid:first-child { margin-top: 0; }
+  .entity-grid:last-child { margin-bottom: 0; }
+
+  .entity-card {
+    background: var(--bg3);
+    border: 1px solid var(--line);
+    padding: 28px;
+    position: relative;
+    min-width: 0;
+  }
+
+  /* Тонкая золотая линия сверху карточки */
+  .entity-card::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0;
+    height: 2px;
+    background: var(--accent);
+    opacity: 0.4;
+  }
+
+  .entity-name {
+    font-family: var(--font-mono);
+    font-size: 14px;
+    color: var(--white);
+    letter-spacing: 0.1em;
+    margin-bottom: 10px;
+  }
+
+  .entity-card p { font-size: 16px; line-height: 1.6; color: var(--text-dim); }
+
+  /* Крупное значение в карточке (стоимость, номер) */
+  .entity-value {
+    font-family: var(--font-mono);
+    font-size: 32px;
+    color: var(--accent);
+    line-height: 1.1;
+    margin-bottom: 4px;
+  }
+
+  .entity-value small { font-size: 13px; color: var(--text-dim); letter-spacing: 0.05em; }
+
+  /* Номер действия или пункта */
+  .entity-index {
+    font-family: var(--font-mono);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.3em;
+    margin-bottom: 8px;
+  }
+
+  /* ===== КАРТОЧКИ ВДОХНОВЕНИЯ: список "вопрос - ответ" ===== */
+  .planet-types {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+    gap: 16px;
+    margin-bottom: 20px;
+  }
+
+  .planet-type {
+    background: var(--bg3);
+    border: 1px solid var(--line2);
+    padding: 28px;
+    min-width: 0;
+  }
+
+  .planet-type-name {
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--accent);
+    letter-spacing: 0.2em;
+    text-transform: uppercase;
+    margin-bottom: 16px;
+  }
+
+  .planet-type dt {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    color: var(--text-dim);
+    letter-spacing: 0.15em;
+    text-transform: uppercase;
+    margin-top: 14px;
+  }
+
+  .planet-type dd { font-size: 16px; line-height: 1.6; font-weight: 300; }
+
+  /* ===== ТАБЛИЦА СЛОЖНОСТИ ===== */
+  .scroll { overflow-x: auto; }
+
+  .difficulty {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--bg3);
+    border: 1px solid var(--line2);
+  }
+
+  .difficulty th {
+    font-family: var(--font-sans);
+    font-size: 11px;
+    font-weight: 300;
+    color: var(--text-dim);
+    letter-spacing: 0.25em;
+    text-transform: uppercase;
+    text-align: left;
+    padding: 16px 28px;
+    border-bottom: 1px solid var(--line2);
+  }
+
+  .difficulty td {
+    padding: 18px 28px;
+    border-bottom: 1px solid var(--line);
+    font-size: 22px;
+    color: var(--white);
+  }
+
+  .difficulty tr:last-child td { border-bottom: none; }
+
+  .difficulty td small { font-size: 14px; color: var(--text-dim); margin-left: 8px; }
+
+  .difficulty .threshold,
+  .difficulty th.threshold {
+    text-align: right;
+    white-space: nowrap;
+  }
+
+  .difficulty .threshold {
+    font-family: var(--font-mono);
+    font-size: 28px;
+    color: var(--accent);
+  }
+
+  /* ===== БРОНЕБОЙНОСТЬ: уровень слева, описание справа ===== */
+  .ap-list { border-top: 1px solid var(--line2); }
+
+  .ap-row {
+    display: grid;
+    grid-template-columns: 90px 1fr;
+    gap: 24px;
+    padding: 22px 0;
+    border-bottom: 1px solid var(--line2);
+  }
+
+  .ap-level {
+    font-family: var(--font-mono);
+    font-size: 24px;
+    color: var(--accent);
+    line-height: 1.4;
+  }
+
+  .ap-row p { font-size: 17px; line-height: 1.7; max-width: 66ch; }
+
+  /* ===== ЗАПИСЬ ХАРАКТЕРИСТИК ОРУЖИЯ ===== */
+  .formula {
+    font-family: var(--font-mono);
+    font-size: clamp(16px, 2.6vw, 24px);
+    color: var(--white);
+    background: var(--bg3);
+    border: 1px solid var(--line2);
+    border-left: 3px solid var(--accent);
+    padding: 28px 32px;
+    margin-bottom: 28px;
+    overflow-wrap: anywhere;
+  }
+
+  .formula b { font-weight: 400; color: var(--accent); }
+
+  /* Шкала дистанции для примера 5-9-18: ширина зоны пропорциональна числу клеток */
+  .range-scale { display: flex; margin: 32px 0 6px; max-width: 720px; }
+
+  .range-zone {
+    flex: var(--span) 1 0;
+    min-width: 0;
+    padding: 10px 4px;
+    text-align: center;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--on-accent);
+    border-right: 2px solid var(--bg);
+  }
+
+  .range-zone:last-child { border-right: none; }
+
+  .zone-hard { background: var(--red); color: var(--white); }
+  .zone-sure { background: var(--accent2); }
+  .zone-normal { background: var(--accent); }
+  .zone-none { background: var(--bg3); color: var(--text-dim); border: 1px solid var(--line2); }
+
+  /* Подписи границ зон под шкалой: та же пропорция, число у правого края зоны */
+  .range-ticks { display: flex; max-width: 720px; margin-bottom: 28px; }
+
+  .range-ticks span {
+    flex: var(--span) 1 0;
+    min-width: 0;
+    text-align: right;
+    font-family: var(--font-mono);
+    font-size: 12px;
+    color: var(--text-dim);
+  }
+
+  /* ===== СТАТУС И НАСТРОЙКИ ПОД МОБИЛЬНЫЕ ЭКРАНЫ ===== */
+  @media (max-width: 900px) {
+    .sidebar { display: none; }
+    .main { margin-left: 0; }
+    .cover, .section { padding: 40px 24px; }
+    .section-header { flex-direction: column; gap: 8px; margin-bottom: 40px; }
+    .law-block { padding: 28px 24px; }
+    .difficulty th, .difficulty td { padding: 14px 16px; }
+    .ap-row { grid-template-columns: 1fr; gap: 4px; }
+  }
+
+  /* Без плавной прокрутки, если пользователь просил меньше анимации */
+  @media (prefers-reduced-motion: reduce) {
+    html { scroll-behavior: auto; }
+    .nav-link { transition: none; }
+  }
+
+  /* ===== ССЫЛКИ-КАРТОЧКИ ГЛАВНОЙ ===== */
+  a.entity-card { display: flex; flex-direction: column; text-decoration: none; color: inherit; transition: border-color .2s, background .2s, transform .2s; }
+  a.entity-card:hover { border-color: var(--accent); background: var(--bg2); transform: translateY(-2px); }
+  a.entity-card:hover::before { opacity: 1; }
+  a.entity-card:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  a.entity-card p { flex: 1; margin-bottom: 20px; }
+  .entity-go { font-family: var(--font-mono); font-size: 11px; color: var(--accent); letter-spacing: 0.3em; text-transform: uppercase; }
+  .entity-sub { font-family: var(--font-sans); font-size: 11px; color: var(--text-dim); letter-spacing: 0.2em; text-transform: uppercase; margin: -4px 0 12px; }
+  .nav-link.current { color: var(--accent); border-left-color: var(--accent); }
+</style>
+</head>
+<body>
+
+<nav class="sidebar" aria-label="Навигация">
+  <div class="sidebar-logo">
+    <span class="title">На гранях</span>
+    <span class="subtitle">Навигация</span>
+  </div>
+  <div class="nav-section">
+    <div class="nav-section-label">Разделы</div>
+    <a href="list_persa.html" class="nav-link">Лист персонажа</a>
+    <a href="rules.html" class="nav-link">Правила</a>
+    <a href="world_book.html" class="nav-link">Информация о вселенной</a>
+  </div>
+</nav>
+
+<main class="main">
+
+  <header class="cover" id="cover">
+    <div class="cover-grid"></div>
+    <div class="cover-index">Система — Навигация</div>
+    <h1 class="cover-title">На<br><span>гранях</span></h1>
+    <div class="cover-subtitle">Добро пожаловать</div>
+    <div class="cover-meta">
+    </div>
+  </header>
+
+  <section class="section" id="sections">
+    <div class="section-header">
+      <div class="section-number">I</div>
+      <h2 class="section-title">Разделы</h2>
+    </div>
+
+    <div class="entity-grid">
+      <a class="entity-card" href="list_persa.html">
+        <div class="entity-index">01</div>
+        <div class="entity-name">Лист персонажа</div>
+        <div class="entity-sub">List persa</div>
+
+        <div class="entity-go">Открыть →</div>
+      </a>
+      <a class="entity-card" href="rules.html">
+        <div class="entity-index">02</div>
+        <div class="entity-name">Правила</div>
+        <div class="entity-sub">Rules</div>
+
+        <div class="entity-go">Открыть →</div>
+      </a>
+      <a class="entity-card" href="world_book.html">
+        <div class="entity-index">03</div>
+        <div class="entity-name">Информация о вселенной</div>
+        <div class="entity-sub">World book</div>
+
+        <div class="entity-go">Открыть →</div>
+      </a>
+    </div>
+  </section>
+
+  <section class="section" id="thanks">
+    <div class="law-block">
+      <div class="law-number">Благодарность</div>
+      <div class="law-title">Спасибо, что играете</div>
+      <p>Авторы желает вам веселья.</p>
+    </div>
+  </section>
+
+</main>
+
+</body>
+</html>
